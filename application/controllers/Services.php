@@ -18,7 +18,8 @@
  *
  * @package Controllers
  */
-class Services extends EA_Controller {
+class Services extends EA_Controller
+{
     /**
      * Services constructor.
      */
@@ -46,10 +47,8 @@ class Services extends EA_Controller {
 
         $user_id = session('user_id');
 
-        if (cannot('view', PRIV_SERVICES))
-        {
-            if ($user_id)
-            {
+        if (cannot('view', PRIV_SERVICES)) {
+            if ($user_id) {
                 abort(403, 'Forbidden');
             }
 
@@ -82,10 +81,8 @@ class Services extends EA_Controller {
      */
     public function search()
     {
-        try
-        {
-            if (cannot('view', PRIV_SERVICES))
-            {
+        try {
+            if (cannot('view', PRIV_SERVICES)) {
                 abort(403, 'Forbidden');
             }
 
@@ -100,22 +97,18 @@ class Services extends EA_Controller {
             $services = $this->services_model->search($keyword, $limit, $offset, $order_by);
 
             json_response($services);
-        }
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }
 
     /**
-     * Create a service.
+     * Store a new service.
      */
-    public function create()
+    public function store()
     {
-        try
-        {
-            if (cannot('add', PRIV_SERVICES))
-            {
+        try {
+            if (cannot('add', PRIV_SERVICES)) {
                 abort(403, 'Forbidden');
             }
 
@@ -132,11 +125,11 @@ class Services extends EA_Controller {
                 'availabilities_type',
                 'attendants_number',
                 'is_private',
-                'id_categories',
+                'id_service_categories',
             ]);
 
             $this->services_model->optional($service, [
-                'id_categories' => NULL
+                'id_service_categories' => null,
             ]);
 
             $service_id = $this->services_model->save($service);
@@ -146,12 +139,30 @@ class Services extends EA_Controller {
             $this->webhooks_client->trigger(WEBHOOK_SERVICE_SAVE, $service);
 
             json_response([
-                'success' => TRUE,
-                'id' => $service_id
+                'success' => true,
+                'id' => $service_id,
             ]);
+        } catch (Throwable $e) {
+            json_exception($e);
         }
-        catch (Throwable $e)
-        {
+    }
+
+    /**
+     * Find a service.
+     */
+    public function find()
+    {
+        try {
+            if (cannot('delete', PRIV_SERVICES)) {
+                abort(403, 'Forbidden');
+            }
+
+            $service_id = request('service_id');
+
+            $service = $this->services_model->find($service_id);
+
+            json_response($service);
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }
@@ -161,10 +172,8 @@ class Services extends EA_Controller {
      */
     public function update()
     {
-        try
-        {
-            if (cannot('edit', PRIV_SERVICES))
-            {
+        try {
+            if (cannot('edit', PRIV_SERVICES)) {
                 abort(403, 'Forbidden');
             }
 
@@ -182,11 +191,11 @@ class Services extends EA_Controller {
                 'availabilities_type',
                 'attendants_number',
                 'is_private',
-                'id_categories',
+                'id_service_categories',
             ]);
 
             $this->services_model->optional($service, [
-                'id_categories' => NULL
+                'id_service_categories' => null,
             ]);
 
             $service_id = $this->services_model->save($service);
@@ -196,12 +205,10 @@ class Services extends EA_Controller {
             $this->webhooks_client->trigger(WEBHOOK_SERVICE_SAVE, $service);
 
             json_response([
-                'success' => TRUE,
-                'id' => $service_id
+                'success' => true,
+                'id' => $service_id,
             ]);
-        }
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }
@@ -211,10 +218,8 @@ class Services extends EA_Controller {
      */
     public function destroy()
     {
-        try
-        {
-            if (cannot('delete', PRIV_SERVICES))
-            {
+        try {
+            if (cannot('delete', PRIV_SERVICES)) {
                 abort(403, 'Forbidden');
             }
 
@@ -227,35 +232,9 @@ class Services extends EA_Controller {
             $this->webhooks_client->trigger(WEBHOOK_SERVICE_DELETE, $service);
 
             json_response([
-                'success' => TRUE,
+                'success' => true,
             ]);
-        }
-        catch (Throwable $e)
-        {
-            json_exception($e);
-        }
-    }
-
-    /**
-     * Find a service.
-     */
-    public function find()
-    {
-        try
-        {
-            if (cannot('delete', PRIV_SERVICES))
-            {
-                abort(403, 'Forbidden');
-            }
-
-            $service_id = request('service_id');
-
-            $service = $this->services_model->find($service_id);
-
-            json_response($service);
-        }
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }

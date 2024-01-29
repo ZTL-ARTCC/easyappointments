@@ -18,7 +18,8 @@
  *
  * @package Controllers
  */
-class Secretaries extends EA_Controller {
+class Secretaries extends EA_Controller
+{
     /**
      * Secretaries constructor.
      */
@@ -46,11 +47,9 @@ class Secretaries extends EA_Controller {
         session(['dest_url' => site_url('secretaries')]);
 
         $user_id = session('user_id');
-        
-        if (cannot('view', PRIV_USERS))
-        {
-            if ($user_id)
-            {
+
+        if (cannot('view', PRIV_USERS)) {
+            if ($user_id) {
                 abort(403, 'Forbidden');
             }
 
@@ -63,13 +62,8 @@ class Secretaries extends EA_Controller {
 
         $providers = $this->providers_model->get();
 
-        foreach ($providers as &$provider)
-        {
-            $this->providers_model->only($provider, [
-                'id',
-                'first_name',
-                'last_name'
-            ]);
+        foreach ($providers as &$provider) {
+            $this->providers_model->only($provider, ['id', 'first_name', 'last_name']);
         }
 
         script_vars([
@@ -97,10 +91,8 @@ class Secretaries extends EA_Controller {
      */
     public function search()
     {
-        try
-        {
-            if (cannot('view', PRIV_USERS))
-            {
+        try {
+            if (cannot('view', PRIV_USERS)) {
                 abort(403, 'Forbidden');
             }
 
@@ -115,22 +107,18 @@ class Secretaries extends EA_Controller {
             $secretaries = $this->secretaries_model->search($keyword, $limit, $offset, $order_by);
 
             json_response($secretaries);
-        }
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }
 
     /**
-     * Create a secretary.
+     * Store a new secretary.
      */
-    public function create()
+    public function store()
     {
-        try
-        {
-            if (cannot('add', PRIV_USERS))
-            {
+        try {
+            if (cannot('add', PRIV_USERS)) {
                 abort(403, 'Forbidden');
             }
 
@@ -159,7 +147,7 @@ class Secretaries extends EA_Controller {
                 'username',
                 'password',
                 'notifications',
-                'calendar_view'
+                'calendar_view',
             ]);
 
             $this->secretaries_model->optional($secretary, [
@@ -173,12 +161,30 @@ class Secretaries extends EA_Controller {
             $this->webhooks_client->trigger(WEBHOOK_SECRETARY_SAVE, $secretary);
 
             json_response([
-                'success' => TRUE,
-                'id' => $secretary_id
+                'success' => true,
+                'id' => $secretary_id,
             ]);
+        } catch (Throwable $e) {
+            json_exception($e);
         }
-        catch (Throwable $e)
-        {
+    }
+
+    /**
+     * Find a secretary.
+     */
+    public function find()
+    {
+        try {
+            if (cannot('view', PRIV_USERS)) {
+                abort(403, 'Forbidden');
+            }
+
+            $secretary_id = request('secretary_id');
+
+            $secretary = $this->secretaries_model->find($secretary_id);
+
+            json_response($secretary);
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }
@@ -188,15 +194,13 @@ class Secretaries extends EA_Controller {
      */
     public function update()
     {
-        try
-        {
-            if (cannot('edit', PRIV_USERS))
-            {
+        try {
+            if (cannot('edit', PRIV_USERS)) {
                 abort(403, 'Forbidden');
             }
 
             $secretary = request('secretary');
-            
+
             $this->secretaries_model->only($secretary, [
                 'id',
                 'first_name',
@@ -221,13 +225,12 @@ class Secretaries extends EA_Controller {
                 'username',
                 'password',
                 'notifications',
-                'calendar_view'
+                'calendar_view',
             ]);
 
             $this->secretaries_model->optional($secretary, [
                 'providers' => [],
             ]);
-
 
             $secretary_id = $this->secretaries_model->save($secretary);
 
@@ -236,12 +239,10 @@ class Secretaries extends EA_Controller {
             $this->webhooks_client->trigger(WEBHOOK_SECRETARY_SAVE, $secretary);
 
             json_response([
-                'success' => TRUE,
-                'id' => $secretary_id
+                'success' => true,
+                'id' => $secretary_id,
             ]);
-        }
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }
@@ -251,10 +252,8 @@ class Secretaries extends EA_Controller {
      */
     public function destroy()
     {
-        try
-        {
-            if (cannot('delete', PRIV_USERS))
-            {
+        try {
+            if (cannot('delete', PRIV_USERS)) {
                 abort(403, 'Forbidden');
             }
 
@@ -267,35 +266,9 @@ class Secretaries extends EA_Controller {
             $this->webhooks_client->trigger(WEBHOOK_SECRETARY_DELETE, $secretary);
 
             json_response([
-                'success' => TRUE,
+                'success' => true,
             ]);
-        }
-        catch (Throwable $e)
-        {
-            json_exception($e);
-        }
-    }
-
-    /**
-     * Find a secretary.
-     */
-    public function find()
-    {
-        try
-        {
-            if (cannot('view', PRIV_USERS))
-            {
-                abort(403, 'Forbidden');
-            }
-
-            $secretary_id = request('secretary_id');
-
-            $secretary = $this->secretaries_model->find($secretary_id);
-
-            json_response($secretary);
-        }
-        catch (Throwable $e)
-        {
+        } catch (Throwable $e) {
             json_exception($e);
         }
     }

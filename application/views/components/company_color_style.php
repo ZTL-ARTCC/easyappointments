@@ -4,7 +4,7 @@
  */
 ?>
 
-<?php if ( ! empty($company_color) && $company_color !== DEFAULT_COMPANY_COLOR): ?>
+<?php if (!empty($company_color) && $company_color !== DEFAULT_COMPANY_COLOR): ?>
     <style>
         /* Generic Overrides */
 
@@ -166,7 +166,7 @@
         .backend-page .filter-records .results .entry.selected {
             border-right-color: <?= $company_color ?> !important;
         }
-        
+
         .flatpickr-calendar .flatpickr-months,
         .flatpickr-calendar .flatpickr-months .flatpickr-month,
         .flatpickr-calendar .flatpickr-weekdays,
@@ -179,5 +179,13 @@
             background: <?= $company_color ?> !important;
             border-color: <?= $company_color ?> !important;
         }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
+            background-color: <?= $company_color ?> !important;
+        }
+
+        #existing-customers-list div:hover {
+            background: <?= $company_color ?> !important;
+        }
     </style>
-<?php endif ?>
+<?php endif; ?>

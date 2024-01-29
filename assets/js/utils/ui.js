@@ -68,7 +68,7 @@ window.App.Utils.UI = (function () {
                     lang('wednesday_short'),
                     lang('thursday_short'),
                     lang('friday_short'),
-                    lang('saturday_short')
+                    lang('saturday_short'),
                 ],
                 longhand: [
                     lang('sunday'),
@@ -77,7 +77,7 @@ window.App.Utils.UI = (function () {
                     lang('wednesday'),
                     lang('thursday'),
                     lang('friday'),
-                    lang('saturday')
+                    lang('saturday'),
                 ],
             },
             months: {
@@ -107,7 +107,7 @@ window.App.Utils.UI = (function () {
                     lang('september'),
                     lang('october'),
                     lang('november'),
-                    lang('december')
+                    lang('december'),
                 ],
             },
             daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
@@ -115,8 +115,7 @@ window.App.Utils.UI = (function () {
             ordinal: function (nth) {
                 const s = nth % 100;
 
-                if (s > 3 && s < 21)
-                    return 'th';
+                if (s > 3 && s < 21) return 'th';
                 switch (s % 10) {
                     case 1:
                         return 'st';
@@ -138,9 +137,8 @@ window.App.Utils.UI = (function () {
             hourAriaLabel: lang('hour'),
             minuteAriaLabel: lang('minute'),
             time_24hr: false,
-        }
+        };
     }
-
 
     /**
      * Initialize the date time picker component.
@@ -150,7 +148,7 @@ window.App.Utils.UI = (function () {
      * @param {jQuery} $target
      * @param {Object} [params]
      */
-    function initializeDatetimepicker($target, params = {}) {
+    function initializeDateTimePicker($target, params = {}) {
         $target.flatpickr({
             enableTime: true,
             allowInput: true,
@@ -158,7 +156,7 @@ window.App.Utils.UI = (function () {
             dateFormat: `${getDateFormat()} ${getTimeFormat()}`,
             time_24hr: vars('time_format') === 'military',
             locale: getFlatpickrLocale(),
-            ...params
+            ...params,
         });
     }
 
@@ -170,13 +168,13 @@ window.App.Utils.UI = (function () {
      * @param {jQuery} $target
      * @param {Object} [params]
      */
-    function initializeDatepicker($target, params = {}) {
+    function initializeDatePicker($target, params = {}) {
         $target.flatpickr({
             allowInput: true,
             dateFormat: getDateFormat(),
             locale: getFlatpickrLocale(),
             static: true,
-            ...params
+            ...params,
         });
     }
 
@@ -188,7 +186,7 @@ window.App.Utils.UI = (function () {
      * @param {jQuery} $target
      * @param {Object} [params]
      */
-    function initializeTimepicker($target, params = {}) {
+    function initializeTimePicker($target, params = {}) {
         $target.flatpickr({
             noCalendar: true,
             enableTime: true,
@@ -197,7 +195,7 @@ window.App.Utils.UI = (function () {
             time_24hr: vars('time_format') === 'military',
             locale: getFlatpickrLocale(),
             static: true,
-            ...params
+            ...params,
         });
     }
 
@@ -225,11 +223,42 @@ window.App.Utils.UI = (function () {
         $target.trumbowyg(params);
     }
 
+    /**
+     * Get Date, Date-Time or Time picker value.
+     *
+     * @param {jQuery} $target
+     *
+     * @return {Date}
+     */
+    function getDateTimePickerValue($target) {
+        if (!$target?.length) {
+            throw new Error('Empty $target argument provided.');
+        }
+
+        return $target[0]._flatpickr.selectedDates[0];
+    }
+
+    /**
+     * Set Date, Date-Time or Time picker value.
+     *
+     * @param {jQuery} $target
+     * @param {Date} value
+     */
+    function setDateTimePickerValue($target, value) {
+        if (!$target?.length) {
+            throw new Error('Empty $target argument provided.');
+        }
+
+        return $target[0]._flatpickr.setDate(value);
+    }
+
     return {
-        initializeDatetimepicker,
-        initializeDatepicker,
-        initializeTimepicker,
+        initializeDateTimePicker,
+        initializeDatePicker,
+        initializeTimePicker,
         initializeDropdown,
         initializeTextEditor,
+        getDateTimePickerValue,
+        setDateTimePickerValue,
     };
 })();

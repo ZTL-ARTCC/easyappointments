@@ -53,17 +53,17 @@ App.Pages.Booking = (function () {
                 palette: {
                     popup: {
                         background: '#ffffffbd',
-                        text: '#666666'
+                        text: '#666666',
                     },
                     button: {
                         background: '#429a82',
-                        text: '#ffffff'
-                    }
+                        text: '#ffffff',
+                    },
                 },
                 content: {
                     message: lang('website_using_cookies_to_ensure_best_experience'),
-                    dismiss: 'OK'
-                }
+                    dismiss: 'OK',
+                },
             });
 
             $cookieNoticeLink.replaceWith(
@@ -72,8 +72,8 @@ App.Pages.Booking = (function () {
                     'data-target': '#cookie-notice-modal',
                     'href': '#',
                     'class': 'cc-link',
-                    'text': $cookieNoticeLink.text()
-                })
+                    'text': $cookieNoticeLink.text(),
+                }),
             );
         }
 
@@ -82,7 +82,7 @@ App.Pages.Booking = (function () {
         // Initialize page's components (tooltips, date pickers etc).
         tippy('[data-tippy-content]');
 
-        App.Utils.UI.initializeDatepicker($selectDate, {
+        App.Utils.UI.initializeDatePicker($selectDate, {
             inline: true,
             minDate: moment().subtract(1, 'day').set({hours: 23, minutes: 59, seconds: 59}).toDate(),
             maxDate: moment().add(vars('future_booking_limit'), 'days').toDate(),
@@ -93,30 +93,40 @@ App.Pages.Booking = (function () {
 
             onMonthChange: (selectedDates, dateStr, instance) => {
                 setTimeout(() => {
-                    const displayedMonthMoment = moment(instance.currentYearElement.value + '-' + (Number(instance.monthsDropdownContainer.value) + 1) + '-01');
+                    const displayedMonthMoment = moment(
+                        instance.currentYearElement.value +
+                            '-' +
+                            String(Number(instance.monthsDropdownContainer.value) + 1).padStart(2, '0') +
+                            '-01',
+                    );
 
                     App.Http.Booking.getUnavailableDates(
                         $selectProvider.val(),
                         $selectService.val(),
-                        displayedMonthMoment.format('YYYY-MM-DD')
+                        displayedMonthMoment.format('YYYY-MM-DD'),
                     );
                 }, 500);
             },
 
             onYearChange: (selectedDates, dateStr, instance) => {
                 setTimeout(() => {
-                    const displayedMonthMoment = moment(instance.currentYearElement.value + '-' + (Number(instance.monthsDropdownContainer.value) + 1) + '-01');
+                    const displayedMonthMoment = moment(
+                        instance.currentYearElement.value +
+                            '-' +
+                            (Number(instance.monthsDropdownContainer.value) + 1) +
+                            '-01',
+                    );
 
                     App.Http.Booking.getUnavailableDates(
                         $selectProvider.val(),
                         $selectService.val(),
-                        displayedMonthMoment.format('YYYY-MM-DD')
+                        displayedMonthMoment.format('YYYY-MM-DD'),
                     );
                 }, 500);
             },
         });
 
-        $selectDate[0]._flatpickr.setDate(new Date());
+        App.Utils.UI.setDateTimePickerValue($selectDate, new Date());
 
         const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const isTimezoneSupported = $selectTimezone.find(`option[value="${browserTimezone}"]`).length > 0;
@@ -130,10 +140,12 @@ App.Pages.Booking = (function () {
         // If the manage mode is true, the appointment data should be loaded by default.
         if (manageMode) {
             applyAppointmentData(vars('appointment_data'), vars('provider_data'), vars('customer_data'));
-            $('#wizard-frame-1').css({
-                'visibility': 'visible',
-                'display': 'none'
-            }).fadeIn();
+            $('#wizard-frame-1')
+                .css({
+                    'visibility': 'visible',
+                    'display': 'none',
+                })
+                .fadeIn();
         } else {
             // Check if a specific service was selected (via URL parameter).
             const selectedServiceId = App.Utils.Url.queryParam('service');
@@ -182,13 +194,15 @@ App.Pages.Booking = (function () {
                     .each((index, bookStepEl) =>
                         $(bookStepEl)
                             .find('strong')
-                            .text(index + 1)
+                            .text(index + 1),
                     );
             } else {
-                $('#wizard-frame-1').css({
-                    'visibility': 'visible',
-                    'display': 'none'
-                }).fadeIn();
+                $('#wizard-frame-1')
+                    .css({
+                        'visibility': 'visible',
+                        'display': 'none',
+                    })
+                    .fadeIn();
             }
 
             prefillFromQueryParam('#first-name', 'first_name');
@@ -215,7 +229,7 @@ App.Pages.Booking = (function () {
      * Remove empty columns and center elements if needed.
      */
     function optimizeContactInfoDisplay() {
-        // If a column has only one control shown then move the control to the other column. 
+        // If a column has only one control shown then move the control to the other column.
 
         const $firstCol = $('#wizard-frame-3 .field-col:first');
         const $firstColControls = $firstCol.find('.form-control');
@@ -234,7 +248,7 @@ App.Pages.Booking = (function () {
             });
         }
 
-        // Hide columns that do not have any controls displayed. 
+        // Hide columns that do not have any controls displayed.
 
         const $fieldCols = $(document).find('#wizard-frame-3 .field-col');
 
@@ -255,7 +269,7 @@ App.Pages.Booking = (function () {
          * Event: Timezone "Changed"
          */
         $selectTimezone.on('change', () => {
-            const date = $selectDate[0]._flatpickr.selectedDates[0];
+            const date = App.Utils.UI.getDateTimePickerValue($selectDate);
 
             if (!date) {
                 return;
@@ -277,7 +291,7 @@ App.Pages.Booking = (function () {
             App.Http.Booking.getUnavailableDates(
                 $target.val(),
                 $selectService.val(),
-                moment($selectDate[0]._flatpickr.selectedDates[0]).format('YYYY-MM-DD')
+                moment(App.Utils.UI.getDateTimePickerValue($selectDate)).format('YYYY-MM-DD'),
             );
             updateConfirmFrame();
         });
@@ -313,7 +327,7 @@ App.Pages.Booking = (function () {
             App.Http.Booking.getUnavailableDates(
                 $selectProvider.val(),
                 $target.val(),
-                moment($selectDate[0]._flatpickr.selectedDates[0]).format('YYYY-MM-DD')
+                moment(App.Utils.UI.getDateTimePickerValue($selectDate)).format('YYYY-MM-DD'),
             );
 
             updateConfirmFrame();
@@ -342,7 +356,7 @@ App.Pages.Booking = (function () {
                         $('<div/>', {
                             'id': 'select-hour-prompt',
                             'class': 'text-danger mb-4',
-                            'text': lang('appointment_hour_missing')
+                            'text': lang('appointment_hour_missing'),
                         }).prependTo('#available-hours');
                     }
                     return;
@@ -422,7 +436,7 @@ App.Pages.Booking = (function () {
                         text: lang('close'),
                         click: (event, messageModal) => {
                             messageModal.dispose();
-                        }
+                        },
                     },
                     {
                         text: lang('confirm'),
@@ -433,14 +447,14 @@ App.Pages.Booking = (function () {
                             }
                             $cancelAppointmentForm.find('#hidden-cancellation-reason').val($cancellationReason.val());
                             $cancelAppointmentForm.submit();
-                        }
-                    }
+                        },
+                    },
                 ];
 
                 App.Utils.Message.show(
                     lang('cancel_appointment_title'),
                     lang('write_appointment_removal_reason'),
-                    buttons
+                    buttons,
                 );
 
                 $cancellationReason = $('<textarea/>', {
@@ -448,8 +462,8 @@ App.Pages.Booking = (function () {
                     'id': 'cancellation-reason',
                     'rows': '3',
                     'css': {
-                        'width': '100%'
-                    }
+                        'width': '100%',
+                    },
                 }).appendTo('#message-modal .modal-body');
 
                 return false;
@@ -461,20 +475,20 @@ App.Pages.Booking = (function () {
                         text: lang('cancel'),
                         click: (event, messageModal) => {
                             messageModal.dispose();
-                        }
+                        },
                     },
                     {
                         text: lang('delete'),
                         click: () => {
                             App.Http.Booking.deletePersonalInformation(vars('customer_token'));
-                        }
-                    }
+                        },
+                    },
                 ];
 
                 App.Utils.Message.show(
                     lang('delete_personal_information'),
                     lang('delete_personal_information_prompt'),
-                    buttons
+                    buttons,
                 );
             });
         }
@@ -572,129 +586,120 @@ App.Pages.Booking = (function () {
      * customer settings and input for the appointment booking.
      */
     function updateConfirmFrame() {
-        if ($availableHours.find('.selected-hour').text() === '') {
-            return;
+        const serviceOptionText = $selectService.find('option:selected').text();
+        $('.display-selected-service').text(serviceOptionText).removeClass('invisible');
+
+        const providerOptionText = $selectProvider.find('option:selected').text();
+        $('.display-selected-provider').text(providerOptionText).removeClass('invisible');
+
+        if (!$availableHours.find('.selected-hour').text()) {
+            return; // No time is selected, skip the rest of this function...
         }
 
-        // Appointment Details
-        let selectedDate = $selectDate[0]._flatpickr.selectedDates[0];
-
-        if (selectedDate !== null) {
-            selectedDate = App.Utils.Date.format(selectedDate, vars('date_format'), vars('time_format'));
-        }
+        // Render the appointment details
 
         const serviceId = $selectService.val();
-        let servicePrice = '';
-        let serviceCurrency = '';
 
-        vars('available_services').forEach((service) => {
-            if (Number(service.id) === Number(serviceId) && Number(service.price) > 0) {
-                servicePrice = service.price;
-                serviceCurrency = service.currency;
-                return false; // Break loop
-            }
-        });
+        const service = vars('available_services').find(
+            (availableService) => Number(availableService.id) === Number(serviceId),
+        );
 
-        $(document)
-            .find('.display-selected-service')
-            .text($selectService.find('option:selected').text())
-            .removeClass('invisible');
+        if (!service) {
+            return; // Service was not found
+        }
 
-        $(document)
-            .find('.display-selected-provider')
-            .text($selectProvider.find('option:selected').text())
-            .removeClass('invisible');
+        const selectedDateObject = App.Utils.UI.getDateTimePickerValue($selectDate);
+        const selectedDateMoment = moment(selectedDateObject);
+        const selectedDate = selectedDateMoment.format('YYYY-MM-DD');
+        const selectedTime = $availableHours.find('.selected-hour').text();
+        const selectedDateTime = `${selectedDate} ${selectedTime}`;
 
-        $('#appointment-details').empty();
+        let formattedSelectedDate;
 
-        $('<div/>', {
-            'html': [
-                $('<h4/>', {
-                    'text': lang('appointment')
-                }),
-                $('<p/>', {
-                    'html': [
-                        $('<span/>', {
-                            'text': lang('service') + ': ' + $selectService.find('option:selected').text()
-                        }),
-                        $('<br/>'),
-                        $('<span/>', {
-                            'text': lang('provider') + ': ' + $selectProvider.find('option:selected').text()
-                        }),
-                        $('<br/>'),
-                        $('<span/>', {
-                            'text':
-                                lang('start') +
-                                ': ' +
-                                selectedDate +
-                                ' ' +
-                                $availableHours.find('.selected-hour').text()
-                        }),
-                        $('<br/>'),
-                        $('<span/>', {
-                            'text': lang('timezone') + ': ' + $selectTimezone.find('option:selected').text()
-                        }),
-                        $('<br/>'),
-                        $('<span/>', {
-                            'text': lang('price') + ': ' + servicePrice + ' ' + serviceCurrency,
-                            'prop': {
-                                'hidden': !servicePrice
-                            }
-                        })
-                    ]
-                })
-            ]
-        }).appendTo('#appointment-details');
+        if (selectedDateObject) {
+            formattedSelectedDate = App.Utils.Date.format(
+                selectedDateTime,
+                vars('date_format'),
+                vars('time_format'),
+                true,
+            );
+        }
 
-        // Customer Details
+        const timezoneOptionText = $selectTimezone.find('option:selected').text();
+
+        $('#appointment-details').html(`
+            <div>
+                <div class="mb-2 fw-bold fs-3">
+                    ${serviceOptionText}
+                </div> 
+                <div class="mb-2 fw-bold text-muted">
+                    ${providerOptionText}
+                </div>
+                <div class="mb-2">
+                    <i class="fas fa-clock me-2"></i>
+                    ${service.duration} ${lang('minutes')}
+                </div>
+                <div class="mb-2">
+                    <i class="fas fa-calendar-day me-2"></i>
+                    ${formattedSelectedDate}
+                </div> 
+                <div class="mb-2">
+                    <i class="fas fa-globe me-2"></i>
+                    ${timezoneOptionText}
+                </div> 
+                <div class="mb-2" ${!Number(service.price) ? 'hidden' : ''}>
+                    <i class="fas fa-cash-register me-2"></i>
+                    ${Number(service.price).toFixed(2)} ${service.currency}
+                </div>
+            </div>     
+        `);
+
+        // Render the customer information
+
         const firstName = App.Utils.String.escapeHtml($firstName.val());
         const lastName = App.Utils.String.escapeHtml($lastName.val());
-        const fullName = firstName + ' ' + lastName;
-        const phoneNumber = App.Utils.String.escapeHtml($phoneNumber.val());
+        const fullName = `${firstName} ${lastName}`.trim();
         const email = App.Utils.String.escapeHtml($email.val());
+        const phoneNumber = App.Utils.String.escapeHtml($phoneNumber.val());
         const address = App.Utils.String.escapeHtml($address.val());
         const city = App.Utils.String.escapeHtml($city.val());
         const zipCode = App.Utils.String.escapeHtml($zipCode.val());
 
-        $('#customer-details').empty();
+        const addressParts = [];
 
-        $('<div/>', {
-            'html': [
-                $('<h4/>)', {
-                    'text': lang('customer')
-                }),
-                $('<p/>', {
-                    'html': [
-                        fullName ? $('<span/>', {
-                            'text': lang('customer') + ': ' + fullName
-                        }) : null,
-                        fullName ? $('<br/>') : null,
-                        phoneNumber ? $('<span/>', {
-                            'text': lang('phone_number') + ': ' + phoneNumber
-                        }) : null,
-                        phoneNumber ? $('<br/>') : null,
-                        email ? $('<span/>', {
-                            'text': lang('email') + ': ' + email
-                        }) : null,
-                        email ? $('<br/>') : null,
-                        address ? $('<span/>', {
-                            'text': lang('address') + ': ' + address
-                        }) : null,
-                        address ? $('<br/>') : null,
-                        city ? $('<span/>', {
-                            'text': lang('city') + ': ' + city,
-                        }) : null,
-                        city ? $('<br/>') : null,
-                        zipCode ? $('<span/>', {
-                            'text': lang('zip_code') + ': ' + zipCode
-                        }) : null,
-                        zipCode ? $('<br/>') : null
-                    ]
-                })
-            ]
-        }).appendTo('#customer-details');
+        if (city) {
+            addressParts.push(city);
+        }
+
+        if (zipCode) {
+            addressParts.push(zipCode);
+        }
+
+        $('#customer-details').html(`
+            <div>
+                <div class="mb-2 fw-bold fs-3">
+                    ${lang('contact_info')}
+                </div>
+                <div class="mb-2 fw-bold text-muted" ${!fullName ? 'hidden' : ''}>
+                    ${fullName}
+                </div>
+                <div class="mb-2" ${!email ? 'hidden' : ''}>
+                    ${email}
+                </div>
+                <div class="mb-2" ${!email ? 'hidden' : ''}>
+                    ${phoneNumber}
+                </div>
+                <div class="mb-2" ${!address ? 'hidden' : ''}>
+                    ${address}
+                </div>
+                <div class="mb-2" ${!addressParts.length ? 'hidden' : ''}>
+                    ${addressParts.join(', ')}
+                </div>
+            </div>
+        `);
 
         // Update appointment form data for submission to server when the user confirms the appointment.
+
         const data = {};
 
         data.customer = {
@@ -705,12 +710,12 @@ App.Pages.Booking = (function () {
             address: $address.val(),
             city: $city.val(),
             zip_code: $zipCode.val(),
-            timezone: $selectTimezone.val()
+            timezone: $selectTimezone.val(),
         };
 
         data.appointment = {
             start_datetime:
-                moment($selectDate[0]._flatpickr.selectedDates[0]).format('YYYY-MM-DD') +
+                moment(App.Utils.UI.getDateTimePickerValue($selectDate)).format('YYYY-MM-DD') +
                 ' ' +
                 moment($('.selected-hour').data('value'), 'HH:mm').format('HH:mm') +
                 ':00',
@@ -718,7 +723,7 @@ App.Pages.Booking = (function () {
             notes: $notes.val(),
             is_unavailability: false,
             id_users_provider: $selectProvider.val(),
-            id_services: $selectService.val()
+            id_services: $selectService.val(),
         };
 
         data.manage_mode = Number(manageMode);
@@ -727,6 +732,7 @@ App.Pages.Booking = (function () {
             data.appointment.id = vars('appointment_data').id;
             data.customer.id = vars('customer_data').id;
         }
+
         $('input[name="post_data"]').val(JSON.stringify(data));
     }
 
@@ -742,11 +748,11 @@ App.Pages.Booking = (function () {
         const serviceId = $selectService.val();
 
         const service = vars('available_services').find(
-            (availableService) => Number(availableService.id) === Number(serviceId)
+            (availableService) => Number(availableService.id) === Number(serviceId),
         );
 
         // Add the duration to the start datetime.
-        const selectedDate = moment($selectDate[0]._flatpickr.selectedDates[0]).format('YYYY-MM-DD');
+        const selectedDate = moment(App.Utils.UI.getDateTimePickerValue($selectDate)).format('YYYY-MM-DD');
 
         const selectedHour = $('.selected-hour').data('value'); // HH:mm
 
@@ -781,7 +787,7 @@ App.Pages.Booking = (function () {
 
             // Set Appointment Date
             const startMoment = moment(appointment.start_datetime);
-            $selectDate[0]._flatpickr.setDate(startMoment.toDate());
+            App.Utils.UI.setDateTimePickerValue($selectDate, startMoment.toDate());
             App.Http.Booking.getAvailableHours(startMoment.format('YYYY-MM-DD'));
 
             // Apply Customer's Data
@@ -807,6 +813,8 @@ App.Pages.Booking = (function () {
     }
 
     /**
+     * Update the service description and information.
+     *
      * This method updates the HTML content with a brief description of the
      * user selected service (only if available in db). This is useful for the
      * customers upon selecting the correct service.
@@ -819,45 +827,49 @@ App.Pages.Booking = (function () {
         $serviceDescription.empty();
 
         const service = vars('available_services').find(
-            (availableService) => Number(availableService.id) === Number(serviceId)
+            (availableService) => Number(availableService.id) === Number(serviceId),
         );
 
         if (!service) {
-            return;
+            return; // Service not found
         }
 
-        $('<strong/>', {
-            'text': App.Utils.String.escapeHtml(service.name),
-        }).appendTo($serviceDescription);
+        // Render the additional service information
 
-        if (service.description) {
-            $('<br/>').appendTo($serviceDescription);
-
-            $('<span/>', {
-                'html': App.Utils.String.escapeHtml(service.description).replaceAll('\n', '<br/>')
-            }).appendTo($serviceDescription);
-        }
-
-        if (service.duration || Number(service.price) > 0 || service.location) {
-            $('<br/>').appendTo($serviceDescription);
-        }
+        const additionalInfoParts = [];
 
         if (service.duration) {
-            $('<span/>', {
-                'text': '[' + lang('duration') + ' ' + service.duration + ' ' + lang('minutes') + ']'
-            }).appendTo($serviceDescription);
+            additionalInfoParts.push(`${lang('duration')}: ${service.duration} ${lang('minutes')}`);
         }
 
         if (Number(service.price) > 0) {
-            $('<span/>', {
-                'text': '[' + lang('price') + ' ' + service.price + ' ' + service.currency + ']'
-            }).appendTo($serviceDescription);
+            additionalInfoParts.push(`${lang('price')}: ${service.price} ${service.currency}`);
         }
 
         if (service.location) {
-            $('<span/>', {
-                'text': '[' + lang('location') + ' ' + service.location + ']'
-            }).appendTo($serviceDescription);
+            additionalInfoParts.push(`${lang('location')}: ${service.location}`);
+        }
+
+        if (additionalInfoParts.length) {
+            $(`
+                <div class="mb-2 fst-italic">
+                    ${additionalInfoParts.join(', ')}
+                </div>
+            `).appendTo($serviceDescription);
+        }
+
+        // Render the service description
+
+        if (service.description.length) {
+            const escapedDescription = App.Utils.String.escapeHtml(service.description);
+
+            const multiLineDescription = escapedDescription.replaceAll('\n', '<br/>');
+
+            $(`
+                <div class="text-muted">
+                    ${multiLineDescription}
+                </div>
+            `).appendTo($serviceDescription);
         }
     }
 
@@ -866,6 +878,6 @@ App.Pages.Booking = (function () {
     return {
         manageMode,
         initialize,
-        updateConfirmFrame
+        updateConfirmFrame,
     };
 })();

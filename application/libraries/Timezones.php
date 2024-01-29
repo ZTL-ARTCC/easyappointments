@@ -18,7 +18,8 @@
  *
  * @package Libraries
  */
-class Timezones {
+class Timezones
+{
     /**
      * @var EA_Controller|CI_Controller
      */
@@ -34,7 +35,7 @@ class Timezones {
      */
     protected array $timezones = [
         'UTC' => [
-            'UTC' => 'UTC'
+            'UTC' => 'UTC',
         ],
         'America' => [
             'America/Adak' => 'Adak (-10:00)',
@@ -316,7 +317,6 @@ class Timezones {
             'Europe/Bucharest' => 'Bucharest (+2:00)',
             'Europe/Chisinau' => 'Chisinau (+2:00)',
             'Europe/Helsinki' => 'Helsinki (+2:00)',
-            'Europe/Istanbul' => 'Istanbul (+2:00)',
             'Europe/Kaliningrad' => 'Kaliningrad (+2:00)',
             'Europe/Kiev' => 'Kiev (+2:00)',
             'Europe/Mariehamn' => 'Mariehamn (+2:00)',
@@ -330,6 +330,7 @@ class Timezones {
             'Europe/Uzhgorod' => 'Uzhgorod (+2:00)',
             'Europe/Vilnius' => 'Vilnius (+2:00)',
             'Europe/Zaporozhye' => 'Zaporozhye (+2:00)',
+            'Europe/Istanbul' => 'Istanbul (+3:00)',
             'Europe/Moscow' => 'Moscow (+3:00)',
             'Europe/Volgograd' => 'Volgograd (+3:00)',
             'Europe/Samara' => 'Samara (+4:00)',
@@ -342,13 +343,13 @@ class Timezones {
             'Asia/Beirut' => 'Beirut (+2:00)',
             'Asia/Damascus' => 'Damascus (+2:00)',
             'Asia/Gaza' => 'Gaza (+2:00)',
-            'Asia/Istanbul' => 'Istanbul (+2:00)',
             'Asia/Jerusalem' => 'Jerusalem (+2:00)',
             'Asia/Nicosia' => 'Nicosia (+2:00)',
             'Asia/Tel_Aviv' => 'Tel_Aviv (+2:00)',
             'Asia/Aden' => 'Aden (+3:00)',
             'Asia/Baghdad' => 'Baghdad (+3:00)',
             'Asia/Bahrain' => 'Bahrain (+3:00)',
+            'Asia/Istanbul' => 'Istanbul (+3:00)',
             'Asia/Kuwait' => 'Kuwait (+3:00)',
             'Asia/Qatar' => 'Qatar (+3:00)',
             'Asia/Tehran' => 'Tehran (+3:30)',
@@ -545,8 +546,7 @@ class Timezones {
      */
     public function convert(string $value, string $from_timezone, string $to_timezone): string
     {
-        if ( ! $to_timezone || $from_timezone === $to_timezone)
-        {
+        if (!$to_timezone || $from_timezone === $to_timezone) {
             return $value;
         }
 
@@ -572,7 +572,7 @@ class Timezones {
     {
         $timezones = $this->to_array();
 
-        return $timezones[$value] ?? NULL;
+        return $timezones[$value] ?? null;
     }
 
     /**
