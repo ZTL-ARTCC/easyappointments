@@ -121,13 +121,12 @@
                 <?php if ($display_notes): ?>
                     <div class="mb-3">
                         <label for="notes" class="form-label">
-                            <?= lang('notes') ?>
+                            CID
                             <?php if ($require_notes): ?>
                                 <span class="text-danger">*</span>
                             <?php endif; ?>
                         </label>
-                        <textarea id="notes" maxlength="500"
-                                  class="<?= $require_notes ? 'required' : '' ?> form-control" rows="1"></textarea>
+                        <input type="text" id="notes" maxlength="500" class="<?= $require_notes ? 'required' : '' ?> form-control" rows="1"></textarea>
                     </div>
                 <?php endif; ?>
             </div>

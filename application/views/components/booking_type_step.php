@@ -74,18 +74,7 @@
                         ?>
                     </select>
                 </div>
-
-                <div class="mb-3">
-                    <label for="select-provider">
-                        <strong><?= lang('provider') ?></strong>
-                    </label>
-
-                    <select id="select-provider" class="form-control"></select>
-                </div>
-
-                <div id="service-description" class="small">
-                    <!-- JS -->
-                </div>
+                <div id="service-description" class="small"></div>
             </div>
         </div>
     </div>
