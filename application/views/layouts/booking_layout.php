@@ -95,12 +95,12 @@
 
 <?php slot('scripts'); ?>
 <script>
-setTimeout(function(){
+window.addEventListener("load", (event) => {
    document.getElementById('first-name').value = '<?= $_REQUEST['name_first'] ?>';
    document.getElementById('last-name').value = '<?= $_REQUEST['name_last'] ?>';
    document.getElementById('email').value = '<?= $_REQUEST['email'] ?>';
    document.getElementById('notes').value = '<?= $_REQUEST['cid'] ?>';
-},500);
+});
 </script>
 </body>
 </html>
