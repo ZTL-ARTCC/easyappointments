@@ -74,6 +74,13 @@
                         ?>
                     </select>
                 </div>
+                <div class="mb-3">
+                    <label for="select-provider">
+                        <strong><?= lang('provider') ?></strong>
+                    </label>
+
+                    <select disabled value="any-provider" style="display: none;" id="select-provider"></select>
+                </div>
                 <div id="service-description" class="small"></div>
             </div>
         </div>
