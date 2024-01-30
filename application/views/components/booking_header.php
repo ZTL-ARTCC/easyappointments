@@ -11,7 +11,8 @@
         <img src="<?= vars('company_logo') ?: base_url('assets/img/logo.png') ?>" alt="logo" id="company-logo">
 
         <span>
-            <?= e($company_name) ?>
+            <?= e($company_name) ?><br>
+            <small>Training Department</small>
         </span>
 
         <div class="d-flex justify-content-center justify-content-md-start">
