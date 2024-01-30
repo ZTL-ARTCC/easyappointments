@@ -94,6 +94,13 @@
 <?php component('matomo_analytics_script', ['matomo_analytics_url' => vars('matomo_analytics_url')]); ?>
 
 <?php slot('scripts'); ?>
-
+<script>
+window.addEventListener("load", (event) => {
+   document.getElementById('first-name').value = '<?= $_REQUEST['name_first'] ?>';
+   document.getElementById('last-name').value = '<?= $_REQUEST['name_last'] ?>';
+   document.getElementById('email').value = '<?= $_REQUEST['email'] ?>';
+   document.getElementById('notes').value = '<?= $_REQUEST['cid'] ?>';
+});
+</script>
 </body>
 </html>
