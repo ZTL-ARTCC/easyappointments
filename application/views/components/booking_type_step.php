@@ -14,7 +14,7 @@
             <div class="col col-md-8 offset-md-2 mt-md-5">
                 <div class="mb-3">
                     <label for="select-service">
-                        <strong><?= lang('service') ?></strong>
+                        <strong>Select Service</strong>
                     </label>
 
                     <select id="select-service" class="form-control">
@@ -74,13 +74,8 @@
                         ?>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="select-provider">
-                        <strong><?= lang('provider') ?></strong>
-                    </label>
 
-                    <select disabled value="any-provider" style="display: none;" id="select-provider"></select>
-                </div>
+                <select disabled value="any-provider" style="display: none;" id="select-provider"></select>
                 <div id="service-description" class="small"></div>
             </div>
         </div>
