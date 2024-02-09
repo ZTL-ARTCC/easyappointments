@@ -273,7 +273,8 @@ window.FrontendBookApi = window.FrontendBookApi || {};
     };
 
     function applyUnavailableDates(unavailableDates, selectedDateString, setDate) {
-        // ZTL Modification - allows enforcement booking policy no more than 2 weeks in the future
+        // Start ZTL Modification 
+        // Allows enforcement booking policy no more than 2 weeks in the future
         const BOOKINGWINDOW = 14; // How many days in the future is booking open for students?
         let bookingWindowTime = new Date.getTime() + (BOOKINGWINDOW * 24 * 60 * 60 * 1000);
         setDate = setDate || false;
@@ -288,6 +289,7 @@ window.FrontendBookApi = window.FrontendBookApi || {};
             for (var i = 1; i <= numberOfDays; i++) {
                 var currentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i);
                 if ((unavailableDates.indexOf(currentDate.toString('yyyy-MM-dd')) === -1) && (currentDate.getTime() <= bookingWindowTime)) {
+        // End ZTL Modification
                     $('#select-date').datepicker('setDate', currentDate);
                     FrontendBookApi.getAvailableHours(currentDate.toString('yyyy-MM-dd'));
                     break;
