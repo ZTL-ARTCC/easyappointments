@@ -459,7 +459,7 @@
 <script src="<?= asset_url('assets/ext/datejs/date.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment.min.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/moment/moment-timezone-with-data.min.js') ?>"></script>
-<script src="<?= asset_url('assets/js/frontend_book_api.js') ?>"></script>
+<script src="assets/js/frontend_book_api.js"></script>
 <script src="<?= asset_url('assets/js/frontend_book.js') ?>"></script>
 
 <script>
